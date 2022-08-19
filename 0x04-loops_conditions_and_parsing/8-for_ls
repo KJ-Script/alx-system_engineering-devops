@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
-# List all files and directories in the current working directory, excluding
-# hidden files. Also, characters before the hyphen (and including the hyphen)
-# are not printed.
+# Displays the content of the current directory in list format
 
-LIST="$(ls)"
-
-for i in $LIST ; do
-  echo "${i#*-}"
+LIST="$(ls -1)"
+for i in $LIST; do
+    echo "$i" | cut -d'-' -f2
 done
