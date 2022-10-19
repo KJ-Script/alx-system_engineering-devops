@@ -1,11 +1,24 @@
-# Configures the nginx web server to listen port 80,
-# return a page that contains the string "Hello World!" when queried
-# at its root (/) and sets /redirect_me to a 301 moved permanently
+# Setup New Ubuntu server with nginx
 
-exec {'configure_nginx':
-  command  => '
-  ./1-install_nginx_web_server
-  ./3-redirection
-  ',
-  provider => 'shell'
+exec { 'update system':
+        command => '/usr/bin/apt-get update',
+}
+
+package { 'nginx':
+	ensure => 'installed',
+	require => Exec['update system']
+}
+
+file {'/var/www/html/index.html':
+	content => 'Hello World!'
+}
+
+exec {'redirect_me':
+	command => 'sed -i "24i\	rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;" /etc/nginx/sites-available/default',
+	provider => 'shell'
+}
+
+service {'nginx':
+	ensure => running,
+	require => Package['nginx']
 }
